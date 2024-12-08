@@ -9,6 +9,13 @@ import java.io.FileReader;
 public class Commands {
     private static Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Handles the CREATE command.
+     *
+     * @param fileIO         The FileIO instance to create a new file.
+     * @param minimalDegree  The minimal degree of the B-Tree.
+     * @return The newly created B-Tree instance, or null if creation failed.
+     */
     public static BTree createCommand(FileIO fileIO, int minimalDegree) {
         System.out.print("Enter new index file name: ");
         String filename = scanner.nextLine().trim();
@@ -23,6 +30,13 @@ public class Commands {
         return null;
     }
 
+    /**
+     * Handles the OPEN command.
+     *
+     * @param fileIO         The FileIO instance to open an existing file.
+     * @param minimalDegree  The minimal degree of the B-Tree.
+     * @return The opened B-Tree instance, or null if opening failed.
+     */
     public static BTree openCommand(FileIO fileIO, int minimalDegree) {
         System.out.print("Enter index file name to open: ");
         String filename = scanner.nextLine().trim();
@@ -37,6 +51,11 @@ public class Commands {
         return null;
     }
 
+    /**
+     * Handles the INSERT command.
+     *
+     * @param btree The B-Tree instance to perform the insertion.
+     */
     public static void insertCommand(BTree btree) {
         try {
             System.out.print("Enter key (unsigned integer): ");
@@ -44,6 +63,7 @@ public class Commands {
             System.out.print("Enter value (unsigned integer): ");
             long value = Long.parseUnsignedLong(scanner.nextLine().trim());
             btree.insert(key, value);
+            System.out.println("Inserted key " + key + " with value " + value + ".");
         } catch (NumberFormatException e) {
             System.out.println("Error: Invalid input. Please enter valid unsigned integers.");
         } catch (Exception e) {
@@ -51,6 +71,11 @@ public class Commands {
         }
     }
 
+    /**
+     * Handles the SEARCH command.
+     *
+     * @param btree The B-Tree instance to perform the search.
+     */
     public static void searchCommand(BTree btree) {
         try {
             System.out.print("Enter key to search: ");
@@ -68,6 +93,11 @@ public class Commands {
         }
     }
 
+    /**
+     * Handles the PRINT command.
+     *
+     * @param btree The B-Tree instance to print.
+     */
     public static void printCommand(BTree btree) {
         try {
             Node root = btree.getRoot();
@@ -81,6 +111,13 @@ public class Commands {
         }
     }
 
+    /**
+     * Recursively performs an in-order traversal to print the B-Tree.
+     *
+     * @param btree The B-Tree instance.
+     * @param node  The current node.
+     * @throws IOException If an I/O error occurs.
+     */
     private static void inorderPrint(BTree btree, Node node) throws IOException {
         if (node == null) {
             return;
@@ -98,6 +135,11 @@ public class Commands {
         }
     }
 
+    /**
+     * Handles the EXTRACT command.
+     *
+     * @param btree The B-Tree instance to extract data from.
+     */
     public static void extractCommand(BTree btree) {
         System.out.print("Enter file name to extract to: ");
         String filename = scanner.nextLine().trim();
@@ -123,6 +165,14 @@ public class Commands {
         }
     }
 
+    /**
+     * Recursively performs an in-order traversal to extract data from the B-Tree.
+     *
+     * @param btree  The B-Tree instance.
+     * @param node   The current node.
+     * @param writer The FileWriter to write data to.
+     * @throws IOException If an I/O error occurs.
+     */
     private static void inorderExtract(BTree btree, Node node, FileWriter writer) throws IOException {
         if (node == null) {
             return;
@@ -140,6 +190,11 @@ public class Commands {
         }
     }
 
+    /**
+     * Handles the LOAD command.
+     *
+     * @param btree The B-Tree instance to load data into.
+     */
     public static void loadCommand(BTree btree) {
         System.out.print("Enter CSV file name to load: ");
         String filename = scanner.nextLine().trim();
@@ -172,9 +227,16 @@ public class Commands {
         }
     }
 
-    public static void quitCommand(FileIO fileIO) {
+    /**
+     * Handles the QUIT command.
+     *
+     * @param btree The B-Tree instance to close.
+     */
+    public static void quitCommand(BTree btree) {
         try {
-            fileIO.closeFile();
+            if (btree != null) {
+                btree.close();
+            }
         } catch (IOException e) {
             System.out.println("Error closing file: " + e.getMessage());
         }
